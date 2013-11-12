@@ -5,25 +5,7 @@
                                stroke 
                                stroke-weight]]))
 
-(defn increment-y-value [position]
-  (merge-with + {:x 0 :y 1 :z 0} position))
-
-(defn time-step-one-body [body]
-  (update-in body [:position]
-    increment-y-value))
-
-(defn time-step-universe [universe]
-  (map 
-    time-step-one-body
-    universe))
-
-(def universe 
-  (atom 
-    (iterate 
-      time-step-one-body 
-      [{:mass 3 :position {:x 15 :y 0 :z 0}}])))
-
-(def STANDARD_SIZE 10)
+(def STANDARD_BODY_SIZE 10)
 
 (def red [255 51 51])
 
@@ -35,9 +17,6 @@
 
 (def yellow [255 255 51])
 
-(defn scale-to-size [mass-of-body]
-  (* STANDARD_SIZE mass-of-body))
-
 (defn colors []
   [red blue purple yellow green])
 
@@ -46,8 +25,29 @@
         color (nth colors (rand-int (count colors)))]
     color))
 
+(defn increment-y-value [position]
+  (merge-with + {:x 0 :y 10 :z 0} position))
+
+(defn time-step-one-body [body]
+  (update-in body [:position]
+    increment-y-value))
+
+(defn time-step-universe [universe]
+  (map 
+    time-step-one-body
+    universe))
+
+(def universe-timeline 
+  (atom 
+    (iterate 
+      time-step-universe 
+      [{:mass 3 :position {:x 100 :y 20 :z 0}}])))
+
+(defn scale-to-size [mass-of-body]
+  (* STANDARD_BODY_SIZE mass-of-body))
+
 (defn increment-universe! []
-  (swap! universe next))
+  (swap! universe-timeline next))
 
 (defn draw-body [body]
   (let [position (:position body)
@@ -62,7 +62,8 @@
     (ellipse x y width height)))
 
 (defn draw-all-bodies [state]
-  (map draw-body state))
+  (dorun 
+    (map draw-body state)))
 
 (defn setup []
     (smooth)
@@ -70,8 +71,8 @@
     (background 200))
 
 (defn draw []
-    (draw-all-bodies (first @universe))
-    (increment-universe!))
+  (draw-all-bodies (first @universe-timeline))
+  (increment-universe!))
   
 (defn -main []
   (sketch
