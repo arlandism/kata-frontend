@@ -1,6 +1,7 @@
 (ns n-bodies-harness.core-spec
   (:require [speclj.core :refer :all]
-            [n-bodies-harness.core :refer :all]))
+            [n-bodies-harness.core :refer :all] 
+            [n-bodies-harness.simulation-rules :refer :all]))
 
 (defn vector-contains? [v search-item]
   (< 

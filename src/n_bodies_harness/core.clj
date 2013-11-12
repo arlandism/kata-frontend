@@ -3,7 +3,8 @@
                                fill frame-rate 
                                sketch smooth 
                                stroke 
-                               stroke-weight]]))
+                               stroke-weight]]
+            [n-bodies-harness.simulation-rules :refer [time-step-universe]]))
 
 (def STANDARD_BODY_SIZE 10)
 
@@ -31,18 +32,6 @@
       (iterate 
         time-step
         initial-state))))
-
-(defn increment-y-value [position]
-  (merge-with + {:x 0 :y 5 :z 0} position))
-
-(defn time-step-one-body [body]
-  (update-in body [:position]
-    increment-y-value))
-
-(defn time-step-universe [universe]
-  (map 
-    time-step-one-body
-    universe))
 
 (defn scale-to-size [mass-of-body]
   (* STANDARD_BODY_SIZE mass-of-body))
