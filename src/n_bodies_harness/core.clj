@@ -25,8 +25,15 @@
         color (nth colors (rand-int (count colors)))]
     color))
 
+(defn initialize-universe! [initial-state time-step] 
+  (def universe-timeline 
+    (atom 
+      (iterate 
+        time-step
+        initial-state))))
+
 (defn increment-y-value [position]
-  (merge-with + {:x 0 :y 10 :z 0} position))
+  (merge-with + {:x 0 :y 5 :z 0} position))
 
 (defn time-step-one-body [body]
   (update-in body [:position]
@@ -36,12 +43,6 @@
   (map 
     time-step-one-body
     universe))
-
-(def universe-timeline 
-  (atom 
-    (iterate 
-      time-step-universe 
-      [{:mass 3 :position {:x 100 :y 20 :z 0}}])))
 
 (defn scale-to-size [mass-of-body]
   (* STANDARD_BODY_SIZE mass-of-body))
@@ -57,7 +58,6 @@
         width (scale-to-size (:mass body))
         [r g b] (random-color)]
     (fill r g b)
-    (stroke-weight 4)
     (stroke r g b)
     (ellipse x y width height)))
 
@@ -66,8 +66,10 @@
     (map draw-body state)))
 
 (defn setup []
+    (initialize-universe! [{:mass 3 :position {:x 100 :y 20 :z 0}}] time-step-universe)
     (smooth)
-    (frame-rate 1)
+    (frame-rate 10)
+    (stroke-weight 4)
     (background 200))
 
 (defn draw []

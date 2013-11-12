@@ -10,7 +10,7 @@
 (describe "time-step-universe"
   (it "increments the y value of the position"
     (let [state-of-world [{:mass 2 :position {:x 0 :y 3 :z 0}}]]
-    (should= {:mass 2 :position {:x 0 :y 4 :z 0}} (first (time-step-universe state-of-world))))))
+    (should= {:mass 2 :position {:x 0 :y 8 :z 0}} (first (time-step-universe state-of-world))))))
 
 (describe "random-color"
   (it "picks a color from a random set"
@@ -20,10 +20,10 @@
 
 (describe "scale-to-size"
   (it "scales masses by the standard size"
-    (should= (* STANDARD_SIZE 3) (scale-to-size 3))))
+    (should= (* STANDARD_BODY_SIZE 3) (scale-to-size 3))))
 
 (describe "draw-all-bodies"
-  (it "applies the draw-body fn to all bodies in the state"
+  (xit "applies the draw-body fn to all bodies in the state"
     (let [state [
                  {:mass 3 :position {:x 0 :y 0 :z 0}} 
                  {:mass 4 :position {:x 1 :y 1 :z 1}}
