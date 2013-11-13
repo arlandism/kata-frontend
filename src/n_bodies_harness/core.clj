@@ -26,15 +26,18 @@
         color (nth colors (rand-int (count colors)))]
     color))
 
-(defn initialize-universe! [initial-state time-step] 
+(defn add-color [h-map]
+  (assoc h-map :color (random-color)))
+
+(defn initialize-universe! [initial-state step-fn] 
   (def universe-timeline 
     (atom 
       (iterate 
-        time-step
+        step-fn
         initial-state))))
 
-(defn scale-to-size [mass-of-body]
-  (* STANDARD_BODY_SIZE mass-of-body))
+(defn scale-to-size [to-scale]
+  (* STANDARD_BODY_SIZE to-scale))
 
 (defn increment-universe! []
   (swap! universe-timeline next))
@@ -45,7 +48,7 @@
         y (:y position)
         height (scale-to-size (:mass body))
         width (scale-to-size (:mass body))
-        [r g b] (random-color)]
+        [r g b] (:color body)]
     (fill r g b)
     (stroke r g b)
     (ellipse x y width height)))
@@ -54,21 +57,26 @@
   (dorun 
     (map draw-body state)))
 
-(defn setup []
-    (initialize-universe! [{:mass 3 :position {:x 100 :y 20 :z 0}}] time-step-universe)
-    (smooth)
-    (frame-rate 10)
-    (stroke-weight 4)
-    (background 200))
+(defn setup [initial-state step-fn]
+  (initialize-universe! (map add-color initial-state) step-fn)
+  (smooth)
+  (frame-rate 10)
+  (stroke-weight 4)
+  (background 200))
 
 (defn draw []
-  (draw-all-bodies (first @universe-timeline))
-  (increment-universe!))
+  (let [universe-snapshot (first @universe-timeline)] 
+    (background 200)
+    (draw-all-bodies universe-snapshot)
+    (increment-universe!)))
   
 (defn -main []
   (sketch
   :title "The Universe"
-  :setup setup
+  :setup (partial setup [{:mass 3 :position {:x 100 :y 20 :z 0}}
+                         {:mass 10 :position {:x 200 :y 0 :z 0}}
+                         {:mass 20 :position {:x 400 :y 0 :z 0}}] 
+                        time-step-universe)
   :draw draw
   :size [1000 1000]))
 
