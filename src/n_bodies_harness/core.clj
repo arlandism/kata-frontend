@@ -73,9 +73,9 @@
 (defn -main []
   (sketch
   :title "The Universe"
-  :setup (partial setup [{:mass 3 :position {:x 100 :y 20 :z 0}}
-                         {:mass 10 :position {:x 200 :y 0 :z 0}}
-                         {:mass 20 :position {:x 400 :y 0 :z 0}}] 
+  :setup (partial setup [{:mass 3 :position {:x 100 :y 20 :z 0} :velocity {:x 0 :y 0}}
+                         {:mass 10 :position {:x 200 :y 250 :z 0} :velocity {:x 1.2 :y 0}}
+                         {:mass 20 :position {:x 400 :y 700 :z 0} :velocity {:x 1.2 :y -0.1}}] 
                         time-step-universe)
   :draw draw
   :size [1000 1000]))
