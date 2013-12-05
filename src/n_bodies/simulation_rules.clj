@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream:src/n_bodies/simulation_rules.clj
 (ns n-bodies.simulation-rules)
 
 (def GRAVITY 6.67384E-11)
@@ -70,6 +71,10 @@
           body 
           the-rest))
             bodies)))
+=======
+(ns n-bodies-harness.simulation-rules
+  (:require [n-bodies-harness.forces :refer [sum-of-forces-on-one-body]]))
+>>>>>>> Stashed changes:src/n_bodies_harness/simulation_rules.clj
   
 (defn momentum [time-step forces]
   (scale-vector time-step forces))
