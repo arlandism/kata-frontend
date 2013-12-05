@@ -1,4 +1,4 @@
-(ns n-bodies-harness.core
+(ns n-bodies.core
   (:require [quil.core :refer [background ellipse 
                                fill frame-rate 
                                sketch smooth 

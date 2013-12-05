@@ -1,4 +1,4 @@
-(ns n-bodies-harness.simulation-rules)
+(ns n-bodies.simulation-rules)
 
 (def GRAVITY 6.67384E-11)
 
