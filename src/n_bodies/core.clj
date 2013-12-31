@@ -4,9 +4,10 @@
                                sketch smooth 
                                stroke 
                                stroke-weight]]
-            [n-bodies-harness.simulation-rules :refer [time-step-universe]]))
+            [n-bodies.simulation-rules :refer [time-step-universe]]
+            [n-bodies.forces :refer [force-on]]))
 
-(def STANDARD_BODY_SIZE 10)
+(def STANDARD_BODY_SIZE 1)
 
 (def red [255 51 51])
 
@@ -70,7 +71,7 @@
 (defn setup [initial-state step-fn]
   (initialize-universe! (map add-color initial-state) step-fn)
   (smooth)
-  (frame-rate 10)
+  (frame-rate 100)
   (stroke-weight 4)
   (background 200))
 
@@ -80,37 +81,26 @@
     (draw-all-bodies universe-snapshot)
     (increment-universe!)))
 
-(defn random-negatives [bound]
-  ( -
-    (rand bound)))
+(def sun 
+  {:mass 150 
+   :position {:x -100 :y 350} 
+   :velocity {:x 0 :y -6}})
 
-(defn random-body-num []
-  (let [body-num (rand-int 4)]
-  (if (< 2 body-num)
-     body-num
-     (random-body-num)))) 
+(def moon
+  {:mass 0.001 
+   :position {:x -50 :y 0} 
+   :velocity {:x 0 :y 12}})
 
-(defn random-body-size []
-  (let [size (rand 20)]
-    (if (< 5 size)
-      size
-      (random-body-size))))
+(def earth 
+  {:mass 120 
+   :position {:x 100 :y 100} 
+   :velocity {:x 0 :y 5}})
 
-(defn random-body []
-  {:mass (random-body-size)
-   :position {:x (rand 500) :y (rand 600)}
-   :velocity {:x (rand-nth [(rand 2) (random-negatives 2)])  :y (rand-nth [(rand 2) (random-negatives 2)])}
-  })
-
-(defn random-bodies []
-  (let [num-bodies 25]
-    (take num-bodies (repeatedly random-body))))
-  
 (defn -main []
   (sketch
   :title "The Universe"
-  :setup (partial setup (random-bodies) 
-                        time-step-universe)
+  :setup (partial setup 
+                  [sun earth] 
+                  time-step-universe)
   :draw draw
   :size [1000 1000]))
-
