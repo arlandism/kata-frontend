@@ -7,7 +7,7 @@
             [n-bodies.simulation-rules :refer [time-step-universe]]
             [n-bodies.forces :refer [force-on]]))
 
-(def STANDARD_BODY_SIZE 1)
+(def STANDARD_BODY_SIZE 0.01)
 
 (def red [255 51 51])
 
@@ -81,26 +81,21 @@
     (draw-all-bodies universe-snapshot)
     (increment-universe!)))
 
-(def sun 
-  {:mass 150 
-   :position {:x -100 :y 350} 
-   :velocity {:x 0 :y -6}})
+(def body-one 
+  {:mass 1500 
+   :position {:x 200 :y 500} 
+   :velocity {:x 0 :y -0.6}})
 
-(def moon
-  {:mass 0.001 
-   :position {:x -50 :y 0} 
-   :velocity {:x 0 :y 12}})
-
-(def earth 
-  {:mass 120 
-   :position {:x 100 :y 100} 
-   :velocity {:x 0 :y 5}})
+(def body-two 
+  {:mass 1200
+   :position {:x 300 :y 500} 
+   :velocity {:x 0 :y 0.5}})
 
 (defn -main []
   (sketch
   :title "The Universe"
   :setup (partial setup 
-                  [sun earth] 
+                  [body-one body-two] 
                   time-step-universe)
   :draw draw
   :size [1000 1000]))
