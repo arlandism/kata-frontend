@@ -69,33 +69,35 @@
     (map draw-body state)))
 
 (defn setup [initial-state step-fn]
-  (initialize-universe! (map add-color initial-state) step-fn)
+  (initialize-universe! initial-state step-fn)
   (smooth)
   (frame-rate 100)
   (stroke-weight 4)
-  (background 200))
+  (background 50))
 
 (defn draw []
   (let [universe-snapshot (first @universe-timeline)] 
-    (background 200)
+    (background 50)
     (draw-all-bodies universe-snapshot)
     (increment-universe!)))
 
 (def body-one 
-  {:mass 1500 
-   :position {:x 200 :y 500} 
-   :velocity {:x 0 :y -0.6}})
+  {:mass 10000
+   :position {:x 500 :y 300} 
+   :velocity {:x 0 :y 0}
+   :color yellow})
 
 (def body-two 
-  {:mass 1200
-   :position {:x 300 :y 500} 
-   :velocity {:x 0 :y 0.5}})
+  {:mass 600
+   :position {:x 650 :y 400} 
+   :velocity {:x 0 :y 1.8}
+   :color blue})
 
 (defn -main []
   (sketch
-  :title "The Universe"
+  :title "Orbital Simulation"
   :setup (partial setup 
-                  [body-one body-two] 
+                  [body-one body-two ] 
                   time-step-universe)
   :draw draw
   :size [1000 1000]))

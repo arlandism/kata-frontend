@@ -1,5 +1,6 @@
 (ns n-bodies.simulation-rules
-  (:require [n-bodies.forces :refer [scale-vector sum-forces-on-body other-elems]]))
+  (:require [n-bodies.forces :refer [sum-forces-on-body]]
+            [n-bodies.vector :refer [scale-vector]]))
   
 (defn momentum [time-step forces]
   (scale-vector time-step forces))
@@ -18,10 +19,10 @@
   (let [current-position (:position body)]
     (merge-with + current-position velocity)))
 
-(defn step-for-body [body other-elems]
+(defn step-for-body [body other-bodies]
   (let [forces (sum-forces-on-body 
                  body 
-                 other-elems) 
+                 other-bodies) 
         time-step 1000000000
         new-velocity (delta-v forces time-step body)
         new-position (new-position body new-velocity)
@@ -33,5 +34,7 @@
 
 (defn time-step-universe [universe]
   (map
-    #(step-for-body % (other-elems % universe))
+    (fn [body]
+      (let [other-bodies (remove #(= body %) universe)] 
+        (step-for-body body other-bodies)))
     universe))

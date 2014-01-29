@@ -1,59 +1,36 @@
-(ns n-bodies.forces)
+(ns n-bodies.forces
+  (:require [n-bodies.vector :refer [scale-vector magnitude-of unit-vector]]))
 
 (def GRAVITY 6.67384E-11)
 
-(defn scale-vector [scale v]
-  (into
-    {}
-    (for [dimension (keys v)]
-      [dimension (* scale (dimension v))])))
-
-(defn other-elems [the-elem all-elems]
-  (filter #(not (= the-elem %)) all-elems))
-
-(defn magnitude-of [v]
-  (Math/sqrt
-    (reduce 
-      +
-      (map 
-        #(* % %)
-        (vals v)))))
-
-(defn unit-vector [v]
-  (let [mag (magnitude-of v)]
-    (scale-vector (/ 1 mag) v)))
-
-(defn- pos-diff [body-one body-two] 
+(defn- positional-difference [pos-one pos-two]
   (merge-with
     -
-    (:position body-one)
-    (:position body-two)))
+    (:position pos-one)
+    (:position pos-two)))
 
-(defn newtonian-force [body-one body-two]
+(defn- newtonian-force [body-one body-two]
   (let [weight (* GRAVITY (:mass body-one) (:mass body-two))
-        distance (magnitude-of (pos-diff body-one body-two))]
-    (/ weight (Math/pow distance 2))))
+        distance (magnitude-of
+                   (positional-difference
+                     body-two
+                     body-one))
+        distance-squared (Math/pow distance 2)]
+    (/ weight distance-squared)))
 
 (defn force-on [body-one body-two]
-  (let [the-force (newtonian-force body-one body-two)
-        unit-vector (unit-vector 
-                      (pos-diff body-two body-one))] 
-    (scale-vector the-force unit-vector)))
+  (let [unit-vector (unit-vector 
+                      (positional-difference
+                        body-two
+                        body-one))]
+    (scale-vector (newtonian-force body-one body-two) unit-vector)))
 
-(defn sum-forces-on-body [body other-bodies]
+(defn sum-forces-on-body [target-body other-bodies]
   (reduce
-    (fn [forces-so-far next-body]
+    (fn [forces next-body]
       (merge-with
         +
-        forces-so-far
-        (force-on body next-body)))
+        forces
+        (force-on target-body next-body)))
     {:x 0 :y 0}
     other-bodies))
-
-(defn compute-all-forces [bodies]
-  (map
-    (fn [body]
-      (sum-forces-on-body 
-        body 
-        (other-elems body bodies)))
-    bodies))
