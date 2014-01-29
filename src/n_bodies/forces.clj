@@ -1,5 +1,5 @@
 (ns n-bodies.forces
-  (:require [n-bodies.vector :refer [scale-vector magnitude-of unit-vector]]))
+  (:require [n-bodies.vector :refer [magnitude-of unit-vector scale-vector]]))
 
 (def GRAVITY 6.67384E-11)
 
@@ -9,28 +9,23 @@
     (:position pos-one)
     (:position pos-two)))
 
-(defn- newtonian-force [body-one body-two]
-  (let [weight (* GRAVITY (:mass body-one) (:mass body-two))
-        distance (magnitude-of
-                   (positional-difference
-                     body-two
-                     body-one))
-        distance-squared (Math/pow distance 2)]
-    (/ weight distance-squared)))
-
 (defn force-on [body-one body-two]
-  (let [unit-vector (unit-vector 
-                      (positional-difference
-                        body-two
-                        body-one))]
-    (scale-vector (newtonian-force body-one body-two) unit-vector)))
+  (let [weight (* GRAVITY (:mass body-one) (:mass body-two))
+        pos-diff (positional-difference
+                     body-two
+                     body-one)
+        distance (magnitude-of pos-diff)
+        distance-squared (Math/pow distance 2)
+        unit-vector (unit-vector pos-diff)
+        the-force (/ weight distance-squared)] 
+    (scale-vector the-force unit-vector)))
 
 (defn sum-forces-on-body [target-body other-bodies]
   (reduce
-    (fn [forces next-body]
+    (fn [forces-so-far next-body]
       (merge-with
         +
-        forces
+        forces-so-far
         (force-on target-body next-body)))
     {:x 0 :y 0}
     other-bodies))
