@@ -36,5 +36,5 @@
   (map
     (fn [body]
       (let [other-bodies (remove #(= body %) universe)] 
-        (step-for-body body other-bodies)))
+        (apply step-for-body body other-bodies)))
     universe))

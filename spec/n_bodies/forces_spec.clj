@@ -45,7 +45,7 @@
                          (force-on @body-one body-three))]
       (should=
         expected-sum
-        (sum-forces-on-body @body-one [@body-two body-three])
+        (sum-forces-on-body @body-one @body-two body-three)
         )
       )
     )

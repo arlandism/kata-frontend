@@ -20,7 +20,7 @@
         the-force (/ weight distance-squared)] 
     (scale-vector the-force unit-vector)))
 
-(defn sum-forces-on-body [target-body other-bodies]
+(defn sum-forces-on-body [target-body & other-bodies]
   (reduce
     (fn [forces-so-far next-body]
       (merge-with
